@@ -1,6 +1,5 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
-import { UserData, AnalysisResult } from "../types";
+import type { UserData, AnalysisResult } from "../types";
 
 const INDICATORS_LIST = [
   "Đường Đời", "Sứ Mệnh", "Linh Hồn", "Nhân Cách", "Ngày Sinh", "Thái Độ", 
@@ -41,22 +40,12 @@ QUY TẮC BẮT BUỘC:
 `;
 
 export const analyzeNumerology = async (userData: UserData): Promise<AnalysisResult> => {
-  // Resolve API key from multiple env sources to avoid undefined in Vite dev/preview
-  const apiKey =
-    process.env.API_KEY ||
-    process.env.GEMINI_API_KEY ||
-    (typeof import.meta !== "undefined" && (import.meta as any).env?.GEMINI_API_KEY) ||
-    (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_GEMINI_API_KEY);
+  // Get API key from environment variables
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
   if (!apiKey) {
-    throw new Error("Thiếu GEMINI_API_KEY. Hãy đặt vào .env.local và khởi động lại.");
+    throw new Error("Thiếu GEMINI_API_KEY. Hãy đặt VITE_GEMINI_API_KEY trong biến môi trường.");
   }
-
-  // Debug helper: show whether a key was resolved (only prefix for safety)
-  console.log(
-    "[Gemini] Resolved API key prefix:",
-    apiKey ? apiKey.slice(0, 6) + "... (length " + apiKey.length + ")" : "none"
-  );
 
   const ai = new GoogleGenAI({ apiKey });
   
