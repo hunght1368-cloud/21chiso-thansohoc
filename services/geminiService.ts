@@ -38,10 +38,24 @@ QUY TẮC BẮT BUỘC:
 
 4. MÀU SẮC: Mã màu Hex (colorHex) cho chỉ số phải rõ nét, tương phản cao trên nền trắng.
 `;
+const getApiKey = (): string => {
+  // Try different possible environment variable names
+  const apiKey = 
+    process.env.GEMINI_API_KEY || 
+    process.env.API_KEY || 
+    import.meta.env.VITE_GEMINI_API_KEY ||
+    import.meta.env.GEMINI_API_KEY;
+  
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY không được tìm thấy trong environment variables");
+  }
+  
+  return apiKey;
+};
 
 export const analyzeNumerology = async (userData: UserData): Promise<AnalysisResult> => {
   // Get API key from environment variables
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const apiKey = getApiKey();
 
   if (!apiKey) {
     throw new Error("Thiếu GEMINI_API_KEY. Hãy đặt VITE_GEMINI_API_KEY trong biến môi trường.");
